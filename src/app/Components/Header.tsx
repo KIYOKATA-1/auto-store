@@ -7,8 +7,18 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Typography from "@mui/joy/Typography";
-import { HeaderProps } from "@/types/header.types";
 
+interface HeaderProps {
+  brand: string;
+  category: string;
+  priceRange: string;
+  brands: string[];
+  categories: string[];
+  priceRanges: string[];
+  onBrandChange: (value: string) => void;
+  onCategoryChange: (value: string) => void;
+  onPriceRangeChange: (value: string) => void;
+}
 
 export default function Header({
   brand,
@@ -47,7 +57,7 @@ export default function Header({
           size="md"
           placeholder="Бренд"
           value={brand}
-          onChange={(event, value) => onBrandChange(value ?? "")}
+          onChange={(e, val) => onBrandChange(val ?? "")}
           sx={{ minWidth: 160 }}
         >
           {brands.map((b) => (
@@ -60,7 +70,7 @@ export default function Header({
           size="md"
           placeholder="Категория"
           value={category}
-          onChange={(event, value) => onCategoryChange(value ?? "")}
+          onChange={(e, val) => onCategoryChange(val ?? "")}
           sx={{ minWidth: 160 }}
         >
           {categories.map((c) => (
@@ -73,7 +83,7 @@ export default function Header({
           size="md"
           placeholder="Цена"
           value={priceRange}
-          onChange={(event, value) => onPriceRangeChange(value ?? "")}
+          onChange={(e, val) => onPriceRangeChange(val ?? "")}
           sx={{ minWidth: 160 }}
         >
           {priceRanges.map((p) => (
