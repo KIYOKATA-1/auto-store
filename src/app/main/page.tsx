@@ -55,9 +55,6 @@ export default function MainPage() {
       />
       <Box sx={{ mt: 4, p: 2 }}>
         <Container maxWidth="md" sx={{ textAlign: "center" }}>
-          <Typography variant="h4" gutterBottom>
-            Добро пожаловать на главную страницу
-          </Typography>
         </Container>
         <Container maxWidth="lg">
           <PartsGrid parts={filtered} />
