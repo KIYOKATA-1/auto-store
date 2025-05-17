@@ -9,27 +9,27 @@ import PartsGrid from "../Components/PartsGrid";
 
 export default function MainPage() {
   const brandOptions = useMemo(
-    () => ["Все", ...new Set(parts.map((p) => p.brand))],
+    () => ["All", ...new Set(parts.map((p) => p.brand))],
     []
   );
   const categoryOptions = useMemo(
-    () => ["Все", ...new Set(parts.map((p) => p.category))],
+    () => ["All", ...new Set(parts.map((p) => p.category))],
     []
   );
-  const priceOptions = ["Все", "<1000", "1000-5000", ">5000"];
+  const priceOptions = ["All", "<1000", "1000-5000", ">5000"];
 
-  const [brand, setBrand] = useState("Все");
-  const [category, setCategory] = useState("Все");
-  const [priceRange, setPriceRange] = useState("Все");
+  const [brand, setBrand] = useState("All");
+  const [category, setCategory] = useState("All");
+  const [priceRange, setPriceRange] = useState("All");
 
   const filtered = useMemo(
     () =>
       parts
-        .filter((p) => brand === "Все" || p.brand === brand)
-        .filter((p) => category === "Все" || p.category === category)
+        .filter((p) => brand === "All" || p.brand === brand)
+        .filter((p) => category === "All" || p.category === category)
         .filter(
           (p) =>
-            priceRange === "Все" ||
+            priceRange === "All" ||
             (priceRange === "<1000"
               ? p.price < 1000
               : priceRange === "1000-5000"

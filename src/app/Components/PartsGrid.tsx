@@ -38,16 +38,16 @@ export default function PartsGrid({ parts }: PartsGridProps) {
               component="img"
               src={part.image}
               alt={part.name}
-              sx={{ width: "100%", height: 160, objectFit: "cover" }}
+              sx={{ width: "100%", height: 200, objectFit: "contain" }}
             />
           </CardOverflow>
           <Box sx={{ p: 2 }}>
-            <Typography variant="h6">{part.name}</Typography>
+            <Typography variant="h6" sx={{textTransform: 'uppercase', fontWeight: 600,}}>{part.name}</Typography>
             <Typography variant="body2" sx={{ mt: 1 }}>
               {part.description}
             </Typography>
             <Typography variant="body2" sx={{ mt: 0.5 }}>
-              Цена: {part.price.toLocaleString("ru-RU")} ₽
+              Цена: {part.price.toLocaleString("ru-RU")} $
             </Typography>
           </Box>
         </Card>

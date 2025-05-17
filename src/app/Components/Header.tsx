@@ -7,18 +7,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Typography from "@mui/joy/Typography";
+import { HeaderProps } from "@/types/header.types";
 
-interface HeaderProps {
-  brand: string;
-  category: string;
-  priceRange: string;
-  brands: string[];
-  categories: string[];
-  priceRanges: string[];
-  onBrandChange: (value: string) => void;
-  onCategoryChange: (value: string) => void;
-  onPriceRangeChange: (value: string) => void;
-}
 
 export default function Header({
   brand,
@@ -49,7 +39,7 @@ export default function Header({
           alt="Logo"
           sx={{ width: 40, height: 40, mr: 1 }}
         />
-        <Typography level="h4">Автокаталог</Typography>
+        <Typography level="h4" sx={{fontWeight: 700}}>DAS-AUTO</Typography>
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
