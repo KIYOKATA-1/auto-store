@@ -1,14 +1,13 @@
 "use client";
 
-import React from "react";
-import { Box, IconButton, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, IconButton, Button, Badge } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Typography from "@mui/joy/Typography";
 import { HeaderProps } from "@/types/header.types";
-
 
 export default function Header({
   brand,
@@ -21,6 +20,30 @@ export default function Header({
   onCategoryChange,
   onPriceRangeChange,
 }: HeaderProps) {
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => {
+      const stored = localStorage.getItem("cart");
+      const cart = stored ? JSON.parse(stored) : [];
+      setCartCount(Array.isArray(cart) ? cart.length : 0);
+    };
+
+    updateCount();
+
+    window.addEventListener("storage", updateCount);
+    window.addEventListener("cartUpdated", updateCount);
+
+    return () => {
+      window.removeEventListener("storage", updateCount);
+      window.removeEventListener("cartUpdated", updateCount);
+    };
+  }, []);
+
+  const handleCartClick = () => {
+    console.log("Перейти в корзину");
+  };
+
   return (
     <Box
       sx={{
@@ -39,7 +62,9 @@ export default function Header({
           alt="Logo"
           sx={{ width: 40, height: 40, mr: 1 }}
         />
-        <Typography level="h4" sx={{fontWeight: 700}}>DAS-AUTO</Typography>
+        <Typography level="h4" sx={{ fontWeight: 700 }}>
+          DAS-AUTO
+        </Typography>
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -85,8 +110,10 @@ export default function Header({
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <IconButton>
-          <ShoppingCartIcon />
+        <IconButton onClick={handleCartClick}>
+          <Badge badgeContent={cartCount} color="primary">
+            <ShoppingCartIcon />
+          </Badge>
         </IconButton>
         <Button startIcon={<LogoutIcon />} variant="outlined">
           Выйти
