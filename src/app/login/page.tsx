@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import NextLink from "next/link";
 import {
@@ -18,7 +19,15 @@ import {
 } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
+
 export default function SignInPage() {
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push("/main");
+  };
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -41,17 +50,23 @@ export default function SignInPage() {
               bgcolor: "#ffffff",
             }}
           >
-
             <Typography variant="h4" component="h1" gutterBottom>
               Sign in
             </Typography>
 
-            <Box component="form" noValidate autoComplete="off" sx={{ mt: 1 }}>
+            <Box
+              component="form"
+              noValidate
+              autoComplete="off"
+              sx={{ mt: 1 }}
+              onSubmit={handleSubmit}
+            >
               <TextField
                 label="Email"
                 placeholder="your@email.com"
                 fullWidth
                 margin="normal"
+                required
               />
 
               <TextField
@@ -60,6 +75,7 @@ export default function SignInPage() {
                 placeholder="••••••"
                 fullWidth
                 margin="normal"
+                required
               />
 
               <FormControlLabel
@@ -111,11 +127,7 @@ export default function SignInPage() {
             <Box sx={{ textAlign: "center", mt: 4 }}>
               <Typography variant="body2">
                 Don&apos;t have an account?{" "}
-                <Link
-                  component={NextLink}
-                  href="/register"
-                  underline="hover"
-                >
+                <Link component={NextLink} href="/register" underline="hover">
                   Sign up
                 </Link>
               </Typography>

@@ -1,0 +1,88 @@
+import { Part } from '@/types/details.type';
+
+export const parts: Part[] = [
+  // BMW
+  {
+    id: 1,
+    brand: 'BMW',
+    name: 'Тормозные колодки',
+    image: 'https://via.placeholder.com/600x400.png?text=Brake+Pads',
+    category: 'brake',
+    price: 4500,
+    description: 'Набор передних тормозных колодок BMW',
+  },
+  {
+    id: 2,
+    brand: 'BMW',
+    name: 'Масляный фильтр',
+    image: 'https://via.placeholder.com/600x400.png?text=Oil+Filter',
+    category: 'filter',
+    price: 1200,
+    description: 'Оригинальный масляный фильтр BMW',
+  },
+  {
+    id: 3,
+    brand: 'BMW',
+    name: 'Свечи зажигания',
+    image: 'https://via.placeholder.com/600x400.png?text=Spark+Plugs',
+    category: 'ignition',
+    price: 800,
+    description: 'Комплект свечей зажигания BMW',
+  },
+  // Porsche
+  {
+    id: 4,
+    brand: 'Porsche',
+    name: 'Воздушный фильтр',
+    image: 'https://via.placeholder.com/600x400.png?text=Air+Filter',
+    category: 'filter',
+    price: 1500,
+    description: 'Оригинальный воздушный фильтр Porsche',
+  },
+  {
+    id: 5,
+    brand: 'Porsche',
+    name: 'Тормозные диски',
+    image: 'https://via.placeholder.com/600x400.png?text=Brake+Discs',
+    category: 'brake',
+    price: 6800,
+    description: 'Пара передних тормозных дисков Porsche',
+  },
+  {
+    id: 6,
+    brand: 'Porsche',
+    name: 'Ремень ГРМ',
+    image: 'https://via.placeholder.com/600x400.png?text=Timing+Belt',
+    category: 'engine',
+    price: 3200,
+    description: 'Комплект ремней ГРМ для Porsche',
+  },
+  // Mercedes
+  {
+    id: 7,
+    brand: 'Mercedes',
+    name: 'Фильтр салона',
+    image: 'https://via.placeholder.com/600x400.png?text=Cabin+Filter',
+    category: 'filter',
+    price: 1800,
+    description: 'Оригинальный фильтр салона Mercedes',
+  },
+  {
+    id: 8,
+    brand: 'Mercedes',
+    name: 'Амортизатор',
+    image: 'https://via.placeholder.com/600x400.png?text=Shock+Absorber',
+    category: 'suspension',
+    price: 7500,
+    description: 'Задний амортизатор Mercedes',
+  },
+  {
+    id: 9,
+    brand: 'Mercedes',
+    name: 'Свечи накаливания',
+    image: 'https://via.placeholder.com/600x400.png?text=Glow+Plugs',
+    category: 'ignition',
+    price: 900,
+    description: 'Комплект свечей накаливания Mercedes',
+  },
+];
