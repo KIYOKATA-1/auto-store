@@ -8,6 +8,7 @@ import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
 import Typography from "@mui/joy/Typography";
 import { HeaderProps } from "@/types/header.types";
+import { useRouter } from "next/navigation";
 
 export default function Header({
   brand,
@@ -21,6 +22,7 @@ export default function Header({
   onPriceRangeChange,
 }: HeaderProps) {
   const [cartCount, setCartCount] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const updateCount = () => {
@@ -41,7 +43,7 @@ export default function Header({
   }, []);
 
   const handleCartClick = () => {
-    console.log("Перейти в корзину");
+    router.push("/cart");
   };
 
   return (
