@@ -12,10 +12,12 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Snackbar,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { Part } from "@/types/details.type";
+import PaymentModal from "../Components/PaymentModal";
 
 type CartItem = Part & { quantity: number };
 
@@ -24,13 +26,14 @@ export default function CartPage() {
   const [shipping, setShipping] = useState<"standard" | "express">("standard");
   const [promo, setPromo] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("cart");
     const parsed: (Part & { quantity?: number })[] = stored
       ? JSON.parse(stored)
       : [];
-
     const map = new Map<number, CartItem>();
     parsed.forEach((p) => {
       const exist = map.get(p.id);
@@ -41,7 +44,6 @@ export default function CartPage() {
         map.set(p.id, { ...p, quantity: qty });
       }
     });
-
     setItems(Array.from(map.values()));
   }, []);
 
@@ -91,119 +93,151 @@ export default function CartPage() {
       currency: "USD",
     }).format(value);
 
+  const handleMakeOrder = () => {
+    if (!items.length) {
+      setSnackbarOpen(true);
+    } else {
+      setModalOpen(true);
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    setItems([]);
+    updateStorage([]);
+  };
+
   return (
-    <Box sx={{ display: "flex", p: 4, gap: 4 }}>
-      {/* Детали Корзины */}
-      <Box sx={{ flex: 2 }}>
-        <Typography variant="h5" gutterBottom>
-          Cart ({items.length} {items.length === 1 ? "item" : "items"})
-        </Typography>
-        <Divider sx={{ mb: 2 }} />
-        {items.map((it) => (
-          <Box
-            key={it.id}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              mb: 2,
-              gap: 2,
-            }}
-          >
+    <>
+      <Box sx={{ display: "flex", p: 4, gap: 4 }}>
+        {/* Cart Items */}
+        <Box sx={{ flex: 2 }}>
+          <Typography variant="h5" gutterBottom>
+            Cart ({items.length} {items.length === 1 ? "item" : "items"})
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          {items.map((it) => (
             <Box
-              component="img"
-              src={it.image}
-              alt={it.name}
-              sx={{ width: 80, height: 80, objectFit: "contain" }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1">{it.name}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                Price: {formatCurrency(it.price)}
+              key={it.id}
+              sx={{ display: "flex", alignItems: "center", mb: 2, gap: 2 }}
+            >
+              <Box
+                component="img"
+                src={it.image}
+                alt={it.name}
+                sx={{ width: 80, height: 80, objectFit: "contain" }}
+              />
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle1">{it.name}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Price: {formatCurrency(it.price)}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <IconButton size="small" onClick={() => changeQty(it.id, -1)}>
+                  <RemoveIcon fontSize="small" />
+                </IconButton>
+                <Typography sx={{ mx: 1 }}>{it.quantity}</Typography>
+                <IconButton size="small" onClick={() => changeQty(it.id, +1)}>
+                  <AddIcon fontSize="small" />
+                </IconButton>
+              </Box>
+              <Typography sx={{ width: 100, textAlign: "right" }}>
+                {formatCurrency(it.price * it.quantity)}
               </Typography>
             </Box>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <IconButton size="small" onClick={() => changeQty(it.id, -1)}>
-                <RemoveIcon fontSize="small" />
-              </IconButton>
-              <Typography sx={{ mx: 1 }}>{it.quantity}</Typography>
-              <IconButton size="small" onClick={() => changeQty(it.id, +1)}>
-                <AddIcon fontSize="small" />
-              </IconButton>
-            </Box>
-            <Typography sx={{ width: 100, textAlign: "right" }}>
-              {formatCurrency(it.price * it.quantity)}
-            </Typography>
+          ))}
+        </Box>
+
+        {/* Order Summary */}
+        <Box
+          sx={{
+            flex: 1,
+            border: "1px solid #e0e0e0",
+            p: 2,
+            borderRadius: 1,
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Order Details
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+            <Typography>Subtotal</Typography>
+            <Typography>{formatCurrency(subtotal)}</Typography>
           </Box>
-        ))}
+
+          <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+            <InputLabel>Shipping</InputLabel>
+            <Select
+              value={shipping}
+              label="Shipping"
+              onChange={(e) =>
+                setShipping(e.target.value as "standard" | "express")
+              }
+            >
+              <MenuItem value="standard">
+                Standard — {formatCurrency(shippingRates.standard)}
+              </MenuItem>
+              <MenuItem value="express">
+                Express — {formatCurrency(shippingRates.express)}
+              </MenuItem>
+            </Select>
+          </FormControl>
+
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Promo Code"
+              value={promo}
+              onChange={(e) => setPromo(e.target.value)}
+            />
+            <Button
+              fullWidth
+              size="small"
+              variant="outlined"
+              sx={{ mt: 1 }}
+              onClick={applyPromo}
+            >
+              Apply
+            </Button>
+          </Box>
+
+          <Divider sx={{ mb: 2 }} />
+
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+            <Typography>Total</Typography>
+            <Typography fontWeight={700}>{formatCurrency(total)}</Typography>
+          </Box>
+
+          <Box onClick={handleMakeOrder}>
+            <Button
+              fullWidth
+              variant="contained"
+              size="large"
+              disabled={!items.length}
+            >
+              MAKE ORDER
+            </Button>
+          </Box>
+        </Box>
       </Box>
 
-      {/* Детали Заказа*/}
-      <Box
-        sx={{
-          flex: 1,
-          border: "1px solid #e0e0e0",
-          p: 2,
-          borderRadius: 1,
-        }}
-      >
-        <Typography variant="h6" gutterBottom>
-          Order Details
-        </Typography>
-        <Divider sx={{ mb: 2 }} />
+      <PaymentModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        amount={total}
+        onSuccess={handlePaymentSuccess}
+      />
 
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-          <Typography>Subtotal</Typography>
-          <Typography>{formatCurrency(subtotal)}</Typography>
-        </Box>
-
-        <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-          <InputLabel>Shipping</InputLabel>
-          <Select
-            value={shipping}
-            label="Shipping"
-            onChange={(e) =>
-              setShipping(e.target.value as "standard" | "express")
-            }
-          >
-            <MenuItem value="standard">
-              Standard — {formatCurrency(shippingRates.standard)}
-            </MenuItem>
-            <MenuItem value="express">
-              Express — {formatCurrency(shippingRates.express)}
-            </MenuItem>
-          </Select>
-        </FormControl>
-
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            fullWidth
-            size="small"
-            label="Promo Code"
-            value={promo}
-            onChange={(e) => setPromo(e.target.value)}
-          />
-          <Button
-            fullWidth
-            size="small"
-            variant="outlined"
-            sx={{ mt: 1 }}
-            onClick={applyPromo}
-          >
-            Apply
-          </Button>
-        </Box>
-
-        <Divider sx={{ mb: 2 }} />
-
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-          <Typography>Total</Typography>
-          <Typography fontWeight={700}>{formatCurrency(total)}</Typography>
-        </Box>
-
-        <Button fullWidth variant="contained" size="large">
-          Checkout
-        </Button>
-      </Box>
-    </Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message="Корзина пуста, выберите товар"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+    </>
   );
 }
