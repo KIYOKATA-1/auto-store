@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Box, CssBaseline, Container, Typography } from "@mui/material";
+import { Box, CssBaseline, Container } from "@mui/material";
 
 import { parts } from "@/data/parts";
 import Header from "../Components/Header";
 import PartsGrid from "../Components/PartsGrid";
+import Footer from "../Components/Footer";
 
 export default function MainPage() {
   const brandOptions = useMemo(
@@ -27,15 +28,12 @@ export default function MainPage() {
       parts
         .filter((p) => brand === "All" || p.brand === brand)
         .filter((p) => category === "All" || p.category === category)
-        .filter(
-          (p) =>
-            priceRange === "All" ||
-            (priceRange === "<1000"
-              ? p.price < 1000
-              : priceRange === "1000-5000"
-              ? p.price <= 5000
-              : p.price > 5000)
-        ),
+        .filter((p) => {
+          if (priceRange === "All") return true;
+          if (priceRange === "<1000") return p.price < 1000;
+          if (priceRange === "1000-5000") return p.price <= 5000;
+          return p.price > 5000;
+        }),
     [brand, category, priceRange]
   );
 
@@ -53,6 +51,7 @@ export default function MainPage() {
         onCategoryChange={setCategory}
         onPriceRangeChange={setPriceRange}
       />
+
       <Box sx={{ mt: 4, p: 2 }}>
         <Container maxWidth="md" sx={{ textAlign: "center" }}>
         </Container>
@@ -60,6 +59,8 @@ export default function MainPage() {
           <PartsGrid parts={filtered} />
         </Container>
       </Box>
+
+      <Footer />
     </>
   );
 }
