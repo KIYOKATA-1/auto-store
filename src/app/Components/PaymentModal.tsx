@@ -87,6 +87,8 @@ export default function PaymentModal({
               value={nameOnCard}
               onChange={(e) => setNameOnCard(e.target.value)}
               fullWidth
+              inputProps={{ inputMode: "text" }}
+
             />
 
             <TextField
